@@ -30,6 +30,8 @@ interface Attendee {
   checkedInAt: string | null;
 }
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export function AttendeeList() {
   const [searchValue, setSearchValue] = useState(() => {
     const url = new URL(window.location.toString());
@@ -47,7 +49,7 @@ export function AttendeeList() {
 
   useEffect(() => {
     const url = new URL(
-      "https://www.pass-in.pro/api/events/4d581edb-3f8c-4224-9182-c4398cfea080/attendees"
+      `${BASE_URL}/events/4d581edb-3f8c-4224-9182-c4398cfea080/attendees`
     );
 
     url.searchParams.set("pageIndex", String(page - 1));
