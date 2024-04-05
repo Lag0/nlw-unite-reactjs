@@ -19,6 +19,11 @@ import { TableRow } from "./table/table-row";
 import { ChangeEvent, useEffect, useState } from "react";
 import { ModalComponent } from "./edit-modal";
 import { Checkbox } from "./ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Separator } from "./ui/separator";
+import { Button } from "./ui/button";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { toast, useToast } from "./ui/use-toast";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
@@ -54,6 +59,16 @@ export function AttendeeList() {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
 
   const totalPages = Math.ceil(total / 10);
+
+  const { toast } = useToast();
+
+  function handleToast() {
+    toast({
+      title: "Funcionalidade não implementada",
+      description: "Ainda estamos trabalhando nisso!",
+      variant: "destructive",
+    });
+  }
 
   const handleEditButtonClick = (attendee: Attendee) => {
     setSelectedAttendee(attendee);
@@ -128,7 +143,7 @@ export function AttendeeList() {
               value={searchValue}
               type="text"
               placeholder="Buscar participante..."
-              className="h-auto flex-1 border-0 bg-transparent p-0 text-sm focus:ring-0"
+              className="h-auto flex-1 border-0 bg-transparent p-0 text-sm"
             />
           </div>
         </div>
@@ -137,7 +152,7 @@ export function AttendeeList() {
           <thead>
             <tr className="border-b border-white/10">
               <TableHeader style={{ width: 48 }}>
-                <Checkbox className="size-4 rounded border border-white/10 bg-black/20 focus:ring-0" />
+                <Checkbox className="rounded border-white/10" />
               </TableHeader>
               <TableHeader style={{ width: 96 }}>Código</TableHeader>
               <TableHeader style={{ width: 128 }}>Ingresso</TableHeader>
@@ -157,7 +172,7 @@ export function AttendeeList() {
               return (
                 <TableRow key={attendee.id}>
                   <TableCell>
-                    <Checkbox className="size-4 rounded border border-white/10 bg-black/20 focus:ring-0" />
+                    <Checkbox className="rounded border-white/10" />
                   </TableCell>
                   <TableCell>{attendee.id}</TableCell>
                   <TableCell>{attendee.ticketId}</TableCell>
@@ -180,13 +195,36 @@ export function AttendeeList() {
                     )}
                   </TableCell>
                   <TableCell>
-                    <IconButton
-                      transparent
-                      id="modal-button"
-                      onClick={() => handleEditButtonClick(attendee)}
-                    >
-                      <MoreHorizontal className="size-4" />
-                    </IconButton>
+                    <Popover>
+                      <PopoverTrigger>
+                        <IconButton transparent>
+                          <MoreHorizontal className="size-4" />
+                        </IconButton>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-fit mr-6">
+                        <div>
+                          <h4 className="pl-1">Ações</h4>
+                          <Separator className="my-3" />
+
+                          <PopoverClose className="flex flex-col items-start ">
+                            <Button
+                              variant={"ghost"}
+                              className="pl-1 font-normal"
+                              onClick={() => handleEditButtonClick(attendee)}
+                            >
+                              Editar participantes
+                            </Button>
+                            <Button
+                              variant={"ghost"}
+                              className="pl-1 font-normal"
+                              onClick={handleToast}
+                            >
+                              Deletar participantes
+                            </Button>
+                          </PopoverClose>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </TableCell>
                 </TableRow>
               );

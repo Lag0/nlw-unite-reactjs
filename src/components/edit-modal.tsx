@@ -6,13 +6,13 @@ import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useToast } from "./ui/use-toast";
-// import { Check } from "lucide-react";
 
 interface propsInterface {
   ticketId: string;
   name: string | undefined;
   email: string | undefined;
   createdAt: string;
+  isCheckedIn: boolean | null;
   checkInDate: string | null;
   onClose: () => void;
 }
@@ -23,13 +23,14 @@ export function ModalComponent({
   ticketId,
   name,
   email,
-  checkInDate,
   createdAt,
+  isCheckedIn,
+  checkInDate,
   onClose,
 }: propsInterface) {
   const [inputName, setInputName] = useState(name || "");
   const [inputEmail, setInputEmail] = useState(email || "");
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(isCheckedIn);
   const [inputCheckedInAt, setInputCheckedInAt] = useState(
     checkInDate ? dayjs(checkInDate).toISOString() : ""
   );
@@ -37,7 +38,7 @@ export function ModalComponent({
   const { toast } = useToast();
 
   const handleCheckedChange = (checked: CheckedState) => {
-    setIsChecked(true);
+    setIsChecked(!isChecked);
     setInputCheckedInAt(checked ? new Date().toISOString() : "");
   };
 
@@ -48,8 +49,6 @@ export function ModalComponent({
       isCheckedIn: isChecked,
       checkInDate: inputCheckedInAt || undefined,
     };
-
-    console.log(JSON.stringify(updateData));
 
     try {
       const response = await fetch(`${BASE_URL}/attendees/${ticketId}/edit`, {
@@ -132,8 +131,11 @@ export function ModalComponent({
                 <Label htmlFor="checked-in-at">Data de Check-In</Label>
                 <div className="h-10">
                   <Checkbox
-                    checked={isChecked}
-                    onCheckedChange={handleCheckedChange}
+                    checked={isChecked ? true : false}
+                    onClick={() => {
+                      handleCheckedChange(!isChecked);
+                    }}
+                    className="rounded border-white/10"
                   />
                 </div>
               </div>
