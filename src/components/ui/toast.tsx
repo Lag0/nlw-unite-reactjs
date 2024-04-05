@@ -7,9 +7,12 @@ import { cn } from "../../lib/utils";
 
 const ToastProvider = ToastPrimitives.Provider;
 
+interface Props
+  extends React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport> {}
+
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
-  React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>
+  Props
 >(({ className, ...props }, ref) => (
   <ToastPrimitives.Viewport
     ref={ref}
