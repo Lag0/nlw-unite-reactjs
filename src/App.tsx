@@ -1,5 +1,5 @@
-import { Header } from "./components/Header";
-import { AttendeeList } from "./components/AttendeeList";
+import Header from "./components/site-header";
+import AttendeeList from "./components/attendees-list";
 
 export function App() {
   return (

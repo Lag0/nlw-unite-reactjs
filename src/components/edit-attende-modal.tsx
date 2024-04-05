@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useToast } from "./ui/use-toast";
-import { Attendee } from "./AttendeeList";
+import { Attendee } from "./attendees-list";
 
 interface propsInterface {
   ticketId: string;
@@ -66,7 +66,6 @@ export function ModalComponent({
         throw new Error(`HTTP error! status: ${response.status}`);
 
       const updatedAttendee = await response.json();
-      console.log(updatedAttendee, "updatedAttendee");
       onAttendeeUpdate(updatedAttendee.attendee);
 
       toast({ title: "Informações do participante atualizadas com sucesso!" });

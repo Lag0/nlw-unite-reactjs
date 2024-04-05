@@ -17,16 +17,15 @@ import { TableHeader } from "./ui/table";
 import { TableCell } from "./ui/table";
 import { TableRow } from "./ui/table";
 import { useState } from "react";
-import { ModalComponent } from "./EditModal";
+import { ModalComponent } from "./edit-attende-modal";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { useToast } from "./ui/use-toast";
-import { useAttendees } from "./UseAttendees";
+import { useAttendees } from "../hooks/use-attendees";
 import SearchBar from "./SearchBar";
-import { attendees } from "@/data/attendees";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
@@ -41,7 +40,7 @@ export interface Attendee {
   checkInDate: string | null;
 }
 
-export function AttendeeList() {
+export default function AttendeeList() {
   const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
     null
