@@ -13,7 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
 
   return (
     <div className="flex w-72 items-center gap-3 rounded-lg border border-white/10 px-3 py-1.5">
-      <Search className="size-4 text-emerald-300" />
+      <Search className="size-4 text-orange-400" />
       <input
         type="text"
         value={value}

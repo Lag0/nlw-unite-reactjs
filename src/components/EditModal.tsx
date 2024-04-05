@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { useToast } from "./ui/use-toast";
+import { Attendee } from "./AttendeeList";
 
 interface propsInterface {
   ticketId: string;
@@ -15,6 +16,7 @@ interface propsInterface {
   isCheckedIn: boolean | null;
   checkInDate: string | null;
   onClose: () => void;
+  onAttendeeUpdate: (updatedData: Attendee) => void;
 }
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -27,6 +29,7 @@ export function ModalComponent({
   isCheckedIn,
   checkInDate,
   onClose,
+  onAttendeeUpdate,
 }: propsInterface) {
   const [inputName, setInputName] = useState(name || "");
   const [inputEmail, setInputEmail] = useState(email || "");
@@ -59,11 +62,12 @@ export function ModalComponent({
         body: JSON.stringify(updateData),
       });
 
-      if (!response.ok) {
-        const errorDetails = await response.text();
-        console.error("Error details:", errorDetails);
+      if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-      }
+
+      const updatedAttendee = await response.json();
+      console.log(updatedAttendee, "updatedAttendee");
+      onAttendeeUpdate(updatedAttendee.attendee);
 
       toast({ title: "Informações do participante atualizadas com sucesso!" });
 

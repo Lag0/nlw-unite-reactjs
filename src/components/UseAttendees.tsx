@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Attendee } from "./AttendeeList";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -24,5 +24,15 @@ export const useAttendees = (page: number, searchValue: string) => {
     fetchAttendees();
   }, [page, searchValue]);
 
-  return { attendees, total };
+  const updateAttendee = useCallback((updatedAttendee: Attendee) => {
+    setAttendees((currentAttendees) =>
+      currentAttendees.map((attendee) =>
+        attendee.ticketId === updatedAttendee.ticketId
+          ? updatedAttendee
+          : attendee
+      )
+    );
+  }, []);
+
+  return { attendees, total, updateAttendee };
 };

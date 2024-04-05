@@ -4,7 +4,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
   MoreHorizontal,
-  PlusCircle,
 } from "lucide-react";
 
 import dayjs from "dayjs";
@@ -12,10 +11,10 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/pt-br";
 
 import { IconButton } from "./icon-button";
-import { Table, TableBody, TableFooter, TableHead } from "./ui/table";
-import { TableHeader } from "./ui/table";
-import { TableCell } from "./ui/table";
-import { TableRow } from "./ui/table";
+import { Table } from "./table/table";
+import { TableHeader } from "./table/table-header";
+import { TableCell } from "./table/table-cell";
+import { TableRow } from "./table/table-row";
 import { useState } from "react";
 import { ModalComponent } from "./EditModal";
 import { Checkbox } from "./ui/checkbox";
@@ -26,7 +25,6 @@ import { PopoverClose } from "@radix-ui/react-popover";
 import { useToast } from "./ui/use-toast";
 import { useAttendees } from "./UseAttendees";
 import SearchBar from "./SearchBar";
-import { attendees } from "@/data/attendees";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
@@ -42,19 +40,10 @@ export interface Attendee {
 }
 
 export function AttendeeList() {
-  const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
+  const [isModalOpen, setIsOpenModal] = useState(false);
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
     null
   );
-
-  const { toast } = useToast();
-  function handleErrorToast() {
-    toast({
-      title: "Funcionalidade não implementada",
-      description: "Ainda estamos trabalhando nisso!",
-      variant: "destructive",
-    });
-  }
 
   const [searchValue, setSearchValue] = useState<string>(() => {
     const url = new URL(window.location.toString());
@@ -66,9 +55,17 @@ export function AttendeeList() {
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const { attendees, total, updateAttendee } = useAttendees(page, searchValue);
-
+  const { attendees, total } = useAttendees(page, searchValue);
   const totalPages = Math.ceil(total / 10);
+
+  const { toast } = useToast();
+  function handleToast() {
+    toast({
+      title: "Funcionalidade não implementada",
+      description: "Ainda estamos trabalhando nisso!",
+      variant: "destructive",
+    });
+  }
 
   const handleEditButtonClick = (attendee: Attendee) => {
     setSelectedAttendee(attendee);
@@ -100,68 +97,53 @@ export function AttendeeList() {
       <div
         className={`flex flex-col gap-4 transition-all ${isModalOpen ? `blur-sm` : `blur-none`}`}
       >
-        <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
-        <p className="text-muted-foreground">
-          Lista de participantes para o evento <strong>NLW Unite</strong>
-        </p>
-
         <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold">Participantes</h1>
           <SearchBar value={searchValue} onChange={setCurrentSearch} />
-          <Button
-            className="gap-2 font-light border-dashed border"
-            onClick={handleErrorToast}
-            size={"sm"}
-            variant={"ghost"}
-          >
-            <span>
-              <PlusCircle className="size-4" />
-            </span>
-            Adicionar participantes
-          </Button>
         </div>
 
         <Table>
-          <TableHeader>
-            <TableRow className="border-b border-white/10">
-              <TableHead role="checkbox" className="col-span-1">
+          <thead>
+            <tr className="border-b border-white/10">
+              <TableHeader style={{ width: 48 }}>
                 <Checkbox className="rounded border-white/10" />
-              </TableHead>
-              {/* <TableHead>Código</TableHead> */}
-              <TableHead>Ingresso</TableHead>
-              <TableHead>Participante</TableHead>
-              <TableHead>Data de Inscrição</TableHead>
-              <TableHead>Status do Check-In</TableHead>
-              <TableHead />
-            </TableRow>
-          </TableHeader>
+              </TableHeader>
+              <TableHeader style={{ width: 96 }}>Código</TableHeader>
+              <TableHeader style={{ width: 128 }}>Ingresso</TableHeader>
+              <TableHeader>Participante</TableHeader>
+              <TableHeader style={{ width: 196 }}>
+                Data de Inscrição
+              </TableHeader>
+              <TableHeader style={{ width: 256 }}>
+                Status do Check-In
+              </TableHeader>
+              <TableHeader style={{ width: 64 }} />
+            </tr>
+          </thead>
 
-          <TableBody>
+          <tbody>
             {attendees.map((attendee) => {
               return (
                 <TableRow key={attendee.id}>
-                  <TableCell role="checkbox">
+                  <TableCell>
                     <Checkbox className="rounded border-white/10" />
                   </TableCell>
-                  {/* <TableCell>{attendee.id}</TableCell> */}
+                  <TableCell>{attendee.id}</TableCell>
                   <TableCell>{attendee.ticketId}</TableCell>
                   <TableCell>
                     <div className="flex flex-col gap-1">
                       <span className="font-semibold text-white">
                         {attendee.name}
                       </span>
-                      <span className="text-muted-foreground">
-                        {attendee.email}
-                      </span>
+                      <span>{attendee.email}</span>
                     </div>
                   </TableCell>
                   <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
                   <TableCell>
                     {attendee.isCheckedIn === false ? (
-                      <span className="text-muted-foreground">
-                        ❌ Não fez Check-In
-                      </span>
+                      <span className="text-zinc-400">❌ Não fez Check-In</span>
                     ) : (
-                      <span className="text-foreground">
+                      <span>
                         ✅ Check-In feito {dayjs().to(attendee.checkInDate)}
                       </span>
                     )}
@@ -189,7 +171,7 @@ export function AttendeeList() {
                             <Button
                               variant={"ghost"}
                               className="pl-1 font-normal"
-                              onClick={handleErrorToast}
+                              onClick={handleToast}
                             >
                               Deletar participantes
                             </Button>
@@ -201,10 +183,10 @@ export function AttendeeList() {
                 </TableRow>
               );
             })}
-          </TableBody>
+          </tbody>
 
-          <TableFooter className="bg-transparent">
-            <TableRow>
+          <tfoot>
+            <tr>
               <TableCell colSpan={3}>
                 Mostrando {attendees.length} de {total} items
               </TableCell>
@@ -238,15 +220,14 @@ export function AttendeeList() {
                   </div>
                 </div>
               </TableCell>
-            </TableRow>
-          </TableFooter>
+            </tr>
+          </tfoot>
         </Table>
       </div>
       {isModalOpen && selectedAttendee && (
         <ModalComponent
           {...selectedAttendee}
           onClose={() => setIsOpenModal(false)}
-          onAttendeeUpdate={updateAttendee}
         />
       )}
     </>
