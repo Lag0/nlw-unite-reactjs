@@ -4,7 +4,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
   MoreHorizontal,
-  Search,
 } from "lucide-react";
 
 import dayjs from "dayjs";
@@ -16,19 +15,21 @@ import { Table } from "./table/table";
 import { TableHeader } from "./table/table-header";
 import { TableCell } from "./table/table-cell";
 import { TableRow } from "./table/table-row";
-import { ChangeEvent, useEffect, useState } from "react";
-import { ModalComponent } from "./edit-modal";
+import { useState } from "react";
+import { ModalComponent } from "./EditModal";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { useToast } from "./ui/use-toast";
+import { useAttendees } from "./UseAttendees";
+import SearchBar from "./SearchBar";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
 
-interface Attendee {
+export interface Attendee {
   id: string;
   ticketId: string;
   name: string;
@@ -38,30 +39,26 @@ interface Attendee {
   checkInDate: string | null;
 }
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 export function AttendeeList() {
-  const [searchValue, setSearchValue] = useState(() => {
-    const url = new URL(window.location.toString());
-    return url.searchParams.get("search") || "";
-  });
-
-  const [page, setPage] = useState(() => {
-    const url = new URL(window.location.toString());
-    return Number(url.searchParams.get("page") || 1);
-  });
-
   const [isModalOpen, setIsOpenModal] = useState(false);
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
     null
   );
-  const [total, setTotal] = useState(0);
-  const [attendees, setAttendees] = useState<Attendee[]>([]);
 
+  const [searchValue, setSearchValue] = useState<string>(() => {
+    const url = new URL(window.location.toString());
+    return url.searchParams.get("search") || "";
+  });
+
+  const [page, setPage] = useState<number>(() => {
+    const url = new URL(window.location.toString());
+    return Number(url.searchParams.get("page") || 1);
+  });
+
+  const { attendees, total } = useAttendees(page, searchValue);
   const totalPages = Math.ceil(total / 10);
 
   const { toast } = useToast();
-
   function handleToast() {
     toast({
       title: "Funcionalidade não implementada",
@@ -75,77 +72,34 @@ export function AttendeeList() {
     setIsOpenModal(true);
   };
 
-  useEffect(() => {
-    const url = new URL(
-      `${BASE_URL}/events/4d581edb-3f8c-4224-9182-c4398cfea080/attendees`
-    );
-
-    url.searchParams.set("pageIndex", String(page - 1));
-
-    if (searchValue.length > 0) {
-      url.searchParams.set("query", searchValue);
-    }
-
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setAttendees(data.attendees);
-        setTotal(data.total);
-      });
-  }, [page, searchValue]);
-
-  function setCurrentSearch(search: string) {
+  const setCurrentSearch = (search: string) => {
     const url = new URL(window.location.toString());
     url.searchParams.set("search", search);
     window.history.pushState({}, "", url.toString());
     setSearchValue(search);
-  }
+    setPage(1);
+  };
 
-  function setCurrentPage(page: number) {
+  const setCurrentPage = (page: number) => {
     const url = new URL(window.location.toString());
     url.searchParams.set("page", String(page));
     window.history.pushState({}, "", url.toString());
     setPage(page);
-  }
+  };
 
-  function onSearchInputChange(event: ChangeEvent<HTMLInputElement>) {
-    setCurrentSearch(event.target.value);
-    setCurrentPage(1);
-  }
-
-  function goToFirstPage() {
-    setCurrentPage(1);
-  }
-
-  function goToPreviousPage() {
-    setCurrentPage(page - 1);
-  }
-
-  function goToNextPage() {
-    setCurrentPage(page + 1);
-  }
-
-  function goToLastPage() {
-    setCurrentPage(totalPages);
-  }
+  const goToFirstPage = () => setCurrentPage(1);
+  const goToPreviousPage = () => page > 1 && setCurrentPage(page - 1);
+  const goToNextPage = () => page < totalPages && setCurrentPage(page + 1);
+  const goToLastPage = () => setCurrentPage(totalPages);
 
   return (
     <>
       <div
-        className={`flex flex-col gap-4 ${isModalOpen ? `blur-sm transition-all` : `blur-none transition-all`}`}
+        className={`flex flex-col gap-4 transition-all ${isModalOpen ? `blur-sm` : `blur-none`}`}
       >
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">Participantes</h1>
-          <div className="flex w-72 items-center gap-3 rounded-lg border border-white/10 px-3 py-1.5">
-            <Search className="size-4 text-emerald-300" />
-            <input
-              onChange={onSearchInputChange}
-              value={searchValue}
-              type="text"
-              placeholder="Buscar participante..."
-              className="h-auto flex-1 border-0 bg-transparent p-0 text-sm"
-            />
-          </div>
+          <SearchBar value={searchValue} onChange={setCurrentSearch} />
         </div>
 
         <Table>
@@ -271,12 +225,10 @@ export function AttendeeList() {
         </Table>
       </div>
       {isModalOpen && selectedAttendee && (
-        <div className="absolute inset-0 z-50">
-          <ModalComponent
-            {...selectedAttendee}
-            onClose={() => setIsOpenModal(false)}
-          />
-        </div>
+        <ModalComponent
+          {...selectedAttendee}
+          onClose={() => setIsOpenModal(false)}
+        />
       )}
     </>
   );

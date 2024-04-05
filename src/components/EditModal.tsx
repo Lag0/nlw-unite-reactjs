@@ -1,6 +1,6 @@
-import { Button } from "../components/ui/button";
-import { Label } from "../components/ui/label";
-import { Input } from "../components/ui/input";
+import { Button } from "./ui/button";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Checkbox } from "./ui/checkbox";
@@ -58,8 +58,6 @@ export function ModalComponent({
         },
         body: JSON.stringify(updateData),
       });
-
-      console.log(response.status);
 
       if (!response.ok) {
         const errorDetails = await response.text();
