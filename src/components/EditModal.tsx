@@ -126,7 +126,7 @@ export function ModalComponent({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="checked-in-at">Data de Check-In</Label>
+                <Label htmlFor="checked-in-at">Status de Check-In</Label>
                 <div className="h-10">
                   <Checkbox
                     checked={isChecked ? true : false}
