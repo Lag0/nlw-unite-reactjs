@@ -23,7 +23,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { toast, useToast } from "./ui/use-toast";
+import { useToast } from "./ui/use-toast";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
