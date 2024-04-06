@@ -4,7 +4,6 @@ import {
   ChevronsLeft,
   ChevronsRight,
   MoreHorizontal,
-  PlusCircle,
 } from "lucide-react";
 
 import dayjs from "dayjs";
@@ -17,43 +16,26 @@ import { TableHeader } from "./ui/table";
 import { TableCell } from "./ui/table";
 import { TableRow } from "./ui/table";
 import { useState } from "react";
-import { ModalComponent } from "./edit-attende-modal";
+import { ModalComponent } from "./edit-attendee-modal";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { useToast } from "./ui/use-toast";
 import { useAttendees } from "../hooks/use-attendees";
-import SearchBar from "./SearchBar";
+import { SearchBar } from "./search-bar";
+import { AddAttendeeModal } from "./add-attendee-modal";
+import { Attendee } from "../types/Attendee";
+import { useToast } from "../components/ui/use-toast";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
-
-export interface Attendee {
-  id: string;
-  ticketId: string;
-  name: string;
-  email: string;
-  createdAt: string;
-  isCheckedIn: boolean | null;
-  checkInDate: string | null;
-}
 
 export default function AttendeeList() {
   const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
     null
   );
-
-  const { toast } = useToast();
-  function handleErrorToast() {
-    toast({
-      title: "Funcionalidade não implementada",
-      description: "Ainda estamos trabalhando nisso!",
-      variant: "destructive",
-    });
-  }
 
   const [searchValue, setSearchValue] = useState<string>(() => {
     const url = new URL(window.location.toString());
@@ -65,7 +47,10 @@ export default function AttendeeList() {
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const { attendees, total, updateAttendee } = useAttendees(page, searchValue);
+  const { attendees, total, updateAttendee, addNewAttendee } = useAttendees(
+    page,
+    searchValue
+  );
 
   const totalPages = Math.ceil(total / 10);
 
@@ -94,11 +79,18 @@ export default function AttendeeList() {
   const goToNextPage = () => page < totalPages && setCurrentPage(page + 1);
   const goToLastPage = () => setCurrentPage(totalPages);
 
+  const { toast } = useToast();
+  function handleErrorToast() {
+    toast({
+      title: "Funcionalidade não implementada",
+      description: "Ainda estamos trabalhando nisso!",
+      variant: "destructive",
+    });
+  }
+
   return (
     <>
-      <div
-        className={`flex flex-col gap-4 transition-all ${isModalOpen ? `blur-sm` : `blur-none`}`}
-      >
+      <div className={`flex flex-col gap-4 transition-all`}>
         <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
         <p className="text-muted-foreground">
           Lista de participantes para o evento <strong>NLW Unite</strong>
@@ -106,17 +98,7 @@ export default function AttendeeList() {
 
         <div className="flex items-center gap-3">
           <SearchBar value={searchValue} onChange={setCurrentSearch} />
-          <Button
-            className="gap-2 font-light border-dashed border"
-            onClick={handleErrorToast}
-            size={"sm"}
-            variant={"ghost"}
-          >
-            <span>
-              <PlusCircle className="size-4" />
-            </span>
-            Adicionar participantes
-          </Button>
+          <AddAttendeeModal onAddNewAttendee={addNewAttendee} />
         </div>
 
         <Table>

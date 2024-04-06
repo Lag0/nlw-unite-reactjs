@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Attendee } from "../components/attendees-list";
+import { Attendee } from "../types/Attendee";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -34,5 +34,10 @@ export const useAttendees = (page: number, searchValue: string) => {
     );
   }, []);
 
-  return { attendees, total, updateAttendee };
+  const addNewAttendee = useCallback((newAttendee: Attendee) => {
+    setAttendees((currentAttendees) => [...currentAttendees, newAttendee]);
+    setTotal((currentTotal) => currentTotal + 1);
+  }, []);
+
+  return { attendees, total, updateAttendee, addNewAttendee };
 };
