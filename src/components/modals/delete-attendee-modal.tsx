@@ -5,9 +5,9 @@ import {
   AlertDialogDescription,
   AlertDialogCancel,
   AlertDialogAction,
-} from "./ui/alert-dialog";
-import { Button } from "./ui/button";
-import { useDeleteAttendee } from "@/hooks/delete-attendee";
+} from "../ui/alert-dialog";
+import { Button } from "../ui/button";
+import { useDeleteAttendee } from "@/hooks/attendee/delete-attendee";
 
 interface DeleteAttendeeDialogProps {
   ticketId: string;

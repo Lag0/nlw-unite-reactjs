@@ -1,19 +1,19 @@
-import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { Checkbox } from "./ui/checkbox";
+import { Checkbox } from "../ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
-import { Attendee } from "../types/Attendee";
-import { useUpdateAttendee } from "../hooks/update-attendee";
+import { Attendee } from "../../types/Attendee";
+import { useUpdateAttendee } from "../../hooks/attendee/update-attendee";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import console from "console";
 
 interface PropsInterface {

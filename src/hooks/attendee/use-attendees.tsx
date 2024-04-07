@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Attendee } from "../types/Attendee";
+import { Attendee } from "../../types/Attendee";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

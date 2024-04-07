@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "./ui/table";
 import { useState } from "react";
-import { EditAttendeeModal } from "./modals/edit-attendee-modal";
+// import { EditAttendeeModal } from "./edit-attendee-modal";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
@@ -29,28 +29,20 @@ import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
 import { useAttendees } from "../hooks/attendee/use-attendees";
 import { SearchBar } from "./search-bar";
-import { AddAttendeeModal } from "./modals/add-attendee-modal";
-import { Attendee } from "../types/Attendee";
-import { DeleteAttendeeDialog } from "./modals/delete-attendee-modal";
-import { useEventInfo } from "@/hooks/event/use-events";
+// import { AddAttendeeModal } from "./add-attendee-modal";
+// import { Attendee } from "../types/Attendee";
+// import { DeleteAttendeeDialog } from "./delete-attendee-dialog";
+import { useEventsList } from "@/hooks/event/use-events";
 import { SkeletonTable } from "./skeletons/skeleton-table";
 import { SkeletonDescription } from "./skeletons/skeleton-description";
+import { AddEventModal } from "./modals/add-event-modal";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
 
 const EVENT_ID = "4d581edb-3f8c-4224-9182-c4398cfea080";
 
-export default function AttendeeList() {
-  const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
-  const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
-    null
-  );
-  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [deleteAttendeeTicketId, setDeleteAttendeeTicketId] = useState<
-    string | null
-  >(null);
-
+export default function EventList() {
   const [searchValue, setSearchValue] = useState<string>(() => {
     const url = new URL(window.location.toString());
     return url.searchParams.get("search") || "";
@@ -61,32 +53,25 @@ export default function AttendeeList() {
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const {
-    attendees,
-    total,
-    updateAttendee,
-    addNewAttendee,
-    deleteAttendee,
-    loadingAttendees,
-  } = useAttendees(page, searchValue, EVENT_ID);
-  const { eventData, loading } = useEventInfo(EVENT_ID);
+  const { attendees, total } = useAttendees(page, searchValue, EVENT_ID);
+  const { eventsList, loading } = useEventsList();
 
   const totalPages = Math.ceil(total / 10);
 
-  const handleEditButtonClick = (attendee: Attendee) => {
-    setSelectedAttendee(attendee);
-    setIsOpenModal(true);
-  };
+  // const handleEditButtonClick = (attendee: Attendee) => {
+  //   setSelectedAttendee(attendee);
+  //   setIsOpenModal(true);
+  // };
 
-  const openDeleteDialog = (ticketId: string) => {
-    setDeleteAttendeeTicketId(ticketId);
-    setShowDeleteDialog(true);
-  };
+  // const openDeleteDialog = (ticketId: string) => {
+  //   setDeleteAttendeeTicketId(ticketId);
+  //   setShowDeleteDialog(true);
+  // };
 
-  const closeDeleteDialog = () => {
-    setDeleteAttendeeTicketId(null);
-    setShowDeleteDialog(false);
-  };
+  // const closeDeleteDialog = () => {
+  //   setDeleteAttendeeTicketId(null);
+  //   setShowDeleteDialog(false);
+  // };
 
   const setCurrentSearch = (search: string) => {
     const url = new URL(window.location.toString());
@@ -113,69 +98,57 @@ export default function AttendeeList() {
   return (
     <>
       <div className={`flex flex-col gap-4 transition-all`}>
-        <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Eventos</h1>
         {loading && <SkeletonDescription />}
         {!loading && (
           <p className="text-muted-foreground">
-            Lista de participantes para o evento{" "}
-            <strong>{eventData?.title}</strong>
+            Lista de eventos cadastrados na plataforma.
           </p>
         )}
 
         <div className="flex items-center gap-3">
-          <SearchBar value={searchValue} onChange={setCurrentSearch} />
-          <AddAttendeeModal onAddNewAttendee={addNewAttendee} />
+          <SearchBar
+            value={searchValue}
+            onChange={setCurrentSearch}
+            placeholder="Buscar eventos..."
+          />
+          <AddEventModal />
         </div>
 
-        {loadingAttendees && <SkeletonTable />}
+        {loading && <SkeletonTable />}
 
-        {!loadingAttendees && (
+        {!loading && (
           <Table>
             <TableHeader>
               <TableRow className="border-b border-white/10">
                 <TableHead role="checkbox" className="col-span-1">
                   <Checkbox className="rounded border-white/10" />
                 </TableHead>
-                {/* <TableHead>Código</TableHead> */}
-                <TableHead>Ingresso</TableHead>
-                <TableHead>Participante</TableHead>
-                <TableHead>Data de Inscrição</TableHead>
-                <TableHead>Status do Check-In</TableHead>
+                <TableHead>ID do Evento</TableHead>
+                <TableHead>Título</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Capacidade</TableHead>
+                <TableHead>Participantes</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {attendees.map((attendee) => {
+              {eventsList.map((event) => {
                 return (
-                  <TableRow key={attendee.ticketId}>
+                  <TableRow key={event.id}>
                     <TableCell role="checkbox">
                       <Checkbox className="rounded border-white/10" />
                     </TableCell>
-                    {/* <TableCell>{attendee.id}</TableCell> */}
-                    <TableCell>{attendee.ticketId}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold text-white">
-                          {attendee.name}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {attendee.email}
-                        </span>
-                      </div>
+                    <TableCell>{event.id}</TableCell>
+                    <TableCell className="font-semibold">
+                      <a href="/eventos" className="underline">
+                        {event.title}
+                      </a>
                     </TableCell>
-                    <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
-                    <TableCell>
-                      {attendee.isCheckedIn === false ? (
-                        <span className="text-muted-foreground">
-                          ❌ Não fez Check-In
-                        </span>
-                      ) : (
-                        <span className="text-foreground">
-                          ✅ Check-In feito {dayjs().to(attendee.checkInDate)}
-                        </span>
-                      )}
-                    </TableCell>
+                    <TableCell>{event.slug}</TableCell>
+                    <TableCell>{event.maximumAttendees}</TableCell>
+                    <TableCell>{event.currentAttendees}</TableCell>
                     <TableCell>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -195,20 +168,20 @@ export default function AttendeeList() {
                                 <Button
                                   variant={"ghost"}
                                   className="pl-1 font-normal"
-                                  onClick={() =>
-                                    handleEditButtonClick(attendee)
-                                  }
+                                  // onClick={() =>
+                                  //   handleEditButtonClick(attendee)
+                                  // }
                                 >
-                                  Editar participantes
+                                  Editar evento
                                 </Button>
                                 <Button
                                   variant={"ghost"}
                                   className="pl-1 font-normal"
-                                  onClick={() =>
-                                    openDeleteDialog(attendee.ticketId)
-                                  }
+                                  // onClick={() =>
+                                  //   openDeleteDialog(attendee.ticketId)
+                                  // }
                                 >
-                                  Deletar participantes
+                                  Deletar evento
                                 </Button>
                               </div>
                             </PopoverClose>
@@ -263,7 +236,7 @@ export default function AttendeeList() {
           </Table>
         )}
       </div>
-      {isModalOpen && selectedAttendee && (
+      {/* {isModalOpen && selectedAttendee && (
         <EditAttendeeModal
           {...selectedAttendee}
           onAttendeeUpdate={updateAttendee}
@@ -281,7 +254,7 @@ export default function AttendeeList() {
             closeDeleteDialog();
           }}
         />
-      )}
+      )} */}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { PlusCircle } from "lucide-react";
-import { Button } from "../components/ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogClose,
@@ -9,10 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../components/ui/dialog";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
-import { useAddAttendee } from "../hooks/add-attendee";
+} from "../ui/dialog";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { useAddAttendee } from "../../hooks/attendee/add-attendee";
 import { useState } from "react";
 import { Attendee } from "@/types/Attendee";
 

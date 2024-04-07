@@ -6,8 +6,8 @@ import {
   TableCell,
   TableFooter,
   Table,
-} from "./ui/table";
-import { Skeleton } from "./ui/skeleton";
+} from "../ui/table";
+import { Skeleton } from "../ui/skeleton";
 
 export function SkeletonTable() {
   return (

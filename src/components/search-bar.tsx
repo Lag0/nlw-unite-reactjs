@@ -4,9 +4,14 @@ import { Search } from "lucide-react";
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  value,
+  onChange,
+  placeholder,
+}) => {
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };
@@ -18,7 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
         type="text"
         value={value}
         onChange={handleInputChange}
-        placeholder="Buscar participante..."
+        placeholder={placeholder ? placeholder : "Buscar participante..."}
         className="h-auto flex-1 border-0 bg-transparent p-0 text-sm"
       />
     </div>
