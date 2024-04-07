@@ -1,6 +1,3 @@
-import { Checkbox } from "@radix-ui/react-checkbox";
-import { Popover, PopoverTrigger } from "@radix-ui/react-popover";
-
 import {
   TableHeader,
   TableRow,
@@ -17,21 +14,21 @@ export function SkeletonTable() {
     <>
       <Table>
         <TableHeader>
-          <TableRow className="border-b border-white/10">
-            <TableHead className="size-4">
-              <Skeleton className="size-4" />
+          <TableRow className="border-b border-white/10 ">
+            <TableHead className="size-4 ">
+              <Skeleton className="size-4 " />
             </TableHead>
             <TableHead className="w-32">
-              <Skeleton className="h-4 w-32 rounded-lg" />
+              <Skeleton className="h-4 w-32 " />
             </TableHead>
             <TableHead>
-              <Skeleton className="h-4 w-32 rounded-lg" />
+              <Skeleton className="h-4 w-32 " />
             </TableHead>
             <TableHead>
-              <Skeleton className="h-4 w-32 rounded-lg" />
+              <Skeleton className="h-4 w-32 " />
             </TableHead>
             <TableHead>
-              <Skeleton className="h-4 w-32 rounded-lg" />
+              <Skeleton className="h-4 w-32 " />
             </TableHead>
             <TableHead />
           </TableRow>
@@ -45,7 +42,7 @@ export function SkeletonTable() {
                   <Skeleton className="size-4" />
                 </TableCell>
                 <TableCell className="w-32">
-                  <Skeleton className="h-4 w-32 rounded-lg" />
+                  <Skeleton className="h-4 w-32 " />
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
@@ -74,13 +71,16 @@ export function SkeletonTable() {
         <TableFooter className="bg-transparent">
           <TableRow>
             <TableCell colSpan={3}>
-              <Skeleton className="h-16" />
+              <Skeleton className="h-6" />
             </TableCell>
-            <TableCell colSpan={3} className="text-right">
-              <div className="inline-flex items-center gap-8">
-                <Skeleton className="h-16" />
-                <div className="flex gap-1.5">
-                  <Skeleton className="h-8" />
+            <TableCell colSpan={3}>
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-6" />
+                <div className="grid grid-cols-4 gap-4">
+                  <Skeleton className="h-6" />
+                  <Skeleton className="h-6" />
+                  <Skeleton className="h-6" />
+                  <Skeleton className="h-6" />
                 </div>
               </div>
             </TableCell>
