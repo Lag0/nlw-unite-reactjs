@@ -18,20 +18,20 @@ export function SkeletonTable() {
       <Table>
         <TableHeader>
           <TableRow className="border-b border-white/10">
-            <TableHead className="col-span-1">
+            <TableHead className="size-4">
               <Skeleton className="size-4" />
             </TableHead>
-            <TableHead>
-              <Skeleton className="h-4 w-36 rounded-lg" />
+            <TableHead className="w-32">
+              <Skeleton className="h-4 w-32 rounded-lg" />
             </TableHead>
             <TableHead>
-              <Skeleton className="h-4 w-36 rounded-lg" />
+              <Skeleton className="h-4 w-32 rounded-lg" />
             </TableHead>
             <TableHead>
-              <Skeleton className="h-4 w-36 rounded-lg" />
+              <Skeleton className="h-4 w-32 rounded-lg" />
             </TableHead>
             <TableHead>
-              <Skeleton className="h-4 w-36 rounded-lg" />
+              <Skeleton className="h-4 w-32 rounded-lg" />
             </TableHead>
             <TableHead />
           </TableRow>
@@ -41,16 +41,16 @@ export function SkeletonTable() {
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((attendee) => {
             return (
               <TableRow key={attendee}>
-                <TableCell role="checkbox">
+                <TableCell className="size-4">
                   <Skeleton className="size-4" />
                 </TableCell>
-                <TableCell>
-                  <Skeleton className="h-4 w-36 rounded-lg" />
+                <TableCell className="w-32">
+                  <Skeleton className="h-4 w-32 rounded-lg" />
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     <span className="font-semibold text-white">
-                      <Skeleton className="h-6 w-36" />
+                      <Skeleton className="h-6 w-32" />
                     </span>
                     <span className="text-muted-foreground">
                       <Skeleton className="h-6 w-36" />
