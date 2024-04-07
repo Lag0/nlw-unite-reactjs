@@ -83,13 +83,15 @@ export default function AttendeeList() {
     const url = new URL(window.location.toString());
     url.searchParams.set("page", String(page));
     window.history.pushState({}, "", url.toString());
+
     setPage(page);
   };
 
   const goToFirstPage = () => setCurrentPage(1);
   const goToPreviousPage = () => page > 1 && setCurrentPage(page - 1);
   const goToNextPage = () => page < totalPages && setCurrentPage(page + 1);
-  const goToLastPage = () => setCurrentPage(totalPages);
+  const goToLastPage = () =>
+    setCurrentPage(totalPages ? totalPages : totalPages + 1);
 
   return (
     <>
@@ -201,27 +203,25 @@ export default function AttendeeList() {
               <TableCell colSpan={3} className="text-right">
                 <div className="inline-flex items-center gap-8">
                   <span>
-                    Página {page} de {totalPages}...
+                    Página {page} de {totalPages ? totalPages : totalPages + 1}
+                    ...
                   </span>
                   <div className="flex gap-1.5">
-                    <IconButton onClick={goToFirstPage} disabled={page === 1}>
+                    <IconButton onClick={goToFirstPage} disabled={page <= 1}>
                       <ChevronsLeft className="size-4" />
                     </IconButton>
-                    <IconButton
-                      onClick={goToPreviousPage}
-                      disabled={page === 1}
-                    >
+                    <IconButton onClick={goToPreviousPage} disabled={page <= 1}>
                       <ChevronLeft className="size-4" />
                     </IconButton>
                     <IconButton
                       onClick={goToNextPage}
-                      disabled={page === totalPages}
+                      disabled={page >= totalPages}
                     >
                       <ChevronRight className="size-4" />
                     </IconButton>
                     <IconButton
                       onClick={goToLastPage}
-                      disabled={page === totalPages}
+                      disabled={page >= totalPages}
                     >
                       <ChevronsRight className="size-4" />
                     </IconButton>
