@@ -1,5 +1,4 @@
 import { useToast } from "@/components/ui/use-toast";
-import { Attendee } from "@/types/Attendee";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
