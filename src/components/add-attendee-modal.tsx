@@ -2,6 +2,7 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -14,7 +15,6 @@ import { Label } from "../components/ui/label";
 import { useAddAttendee } from "../hooks/add-attendee";
 import { useState } from "react";
 import { Attendee } from "@/types/Attendee";
-import { useToast } from "./ui/use-toast";
 
 interface AddAttendeeModalProps {
   onAddNewAttendee: (newAttendee: Attendee) => void;
@@ -25,15 +25,12 @@ export function AddAttendeeModal({ onAddNewAttendee }: AddAttendeeModalProps) {
   const [email, setEmail] = useState("");
   const addAttendee = useAddAttendee();
 
-  const { toast } = useToast();
-
   const handleSubmitButton = async () => {
     try {
       const newAttendee = await addAttendee(name, email);
-      toast({ title: "Participante adicionado com sucesso!" });
       onAddNewAttendee(newAttendee);
     } catch (error) {
-      console.error(error);
+      console.error("Failed to add new attendee:", error);
     }
   };
 
@@ -89,9 +86,13 @@ export function AddAttendeeModal({ onAddNewAttendee }: AddAttendeeModalProps) {
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={handleSubmitButton}>
-            Adicionar
-          </Button>
+          <DialogClose asChild>
+            <div>
+              <Button type="submit" onClick={handleSubmitButton}>
+                Adicionar
+              </Button>
+            </div>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -16,7 +16,7 @@ import { TableHeader } from "./ui/table";
 import { TableCell } from "./ui/table";
 import { TableRow } from "./ui/table";
 import { useState } from "react";
-import { ModalComponent } from "./edit-attendee-modal";
+import { EditAttendeeModal } from "./edit-attendee-modal";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
@@ -26,7 +26,7 @@ import { useAttendees } from "../hooks/use-attendees";
 import { SearchBar } from "./search-bar";
 import { AddAttendeeModal } from "./add-attendee-modal";
 import { Attendee } from "../types/Attendee";
-import { useToast } from "../components/ui/use-toast";
+import { DeleteAttendeeDialog } from "./delete-attendee-dialog";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
@@ -36,6 +36,10 @@ export default function AttendeeList() {
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
     null
   );
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [deleteAttendeeTicketId, setDeleteAttendeeTicketId] = useState<
+    string | null
+  >(null);
 
   const [searchValue, setSearchValue] = useState<string>(() => {
     const url = new URL(window.location.toString());
@@ -47,16 +51,24 @@ export default function AttendeeList() {
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const { attendees, total, updateAttendee, addNewAttendee } = useAttendees(
-    page,
-    searchValue
-  );
+  const { attendees, total, updateAttendee, addNewAttendee, deleteAttendee } =
+    useAttendees(page, searchValue);
 
   const totalPages = Math.ceil(total / 10);
 
   const handleEditButtonClick = (attendee: Attendee) => {
     setSelectedAttendee(attendee);
     setIsOpenModal(true);
+  };
+
+  const openDeleteDialog = (ticketId: string) => {
+    setDeleteAttendeeTicketId(ticketId);
+    setShowDeleteDialog(true);
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteAttendeeTicketId(null);
+    setShowDeleteDialog(false);
   };
 
   const setCurrentSearch = (search: string) => {
@@ -78,15 +90,6 @@ export default function AttendeeList() {
   const goToPreviousPage = () => page > 1 && setCurrentPage(page - 1);
   const goToNextPage = () => page < totalPages && setCurrentPage(page + 1);
   const goToLastPage = () => setCurrentPage(totalPages);
-
-  const { toast } = useToast();
-  function handleErrorToast() {
-    toast({
-      title: "Funcionalidade não implementada",
-      description: "Ainda estamos trabalhando nisso!",
-      variant: "destructive",
-    });
-  }
 
   return (
     <>
@@ -119,7 +122,7 @@ export default function AttendeeList() {
           <TableBody>
             {attendees.map((attendee) => {
               return (
-                <TableRow key={attendee.id}>
+                <TableRow key={attendee.ticketId}>
                   <TableCell role="checkbox">
                     <Checkbox className="rounded border-white/10" />
                   </TableCell>
@@ -149,31 +152,37 @@ export default function AttendeeList() {
                   </TableCell>
                   <TableCell>
                     <Popover>
-                      <PopoverTrigger>
-                        <IconButton transparent>
-                          <MoreHorizontal className="size-4" />
-                        </IconButton>
+                      <PopoverTrigger asChild>
+                        <div>
+                          <IconButton transparent>
+                            <MoreHorizontal className="size-4" />
+                          </IconButton>
+                        </div>
                       </PopoverTrigger>
                       <PopoverContent className="w-fit mr-6">
                         <div>
                           <h4 className="pl-1">Ações</h4>
                           <Separator className="my-3" />
 
-                          <PopoverClose className="flex flex-col items-start ">
-                            <Button
-                              variant={"ghost"}
-                              className="pl-1 font-normal"
-                              onClick={() => handleEditButtonClick(attendee)}
-                            >
-                              Editar participantes
-                            </Button>
-                            <Button
-                              variant={"ghost"}
-                              className="pl-1 font-normal"
-                              onClick={handleErrorToast}
-                            >
-                              Deletar participantes
-                            </Button>
+                          <PopoverClose asChild>
+                            <div className="flex flex-col items-start ">
+                              <Button
+                                variant={"ghost"}
+                                className="pl-1 font-normal"
+                                onClick={() => handleEditButtonClick(attendee)}
+                              >
+                                Editar participantes
+                              </Button>
+                              <Button
+                                variant={"ghost"}
+                                className="pl-1 font-normal"
+                                onClick={() =>
+                                  openDeleteDialog(attendee.ticketId)
+                                }
+                              >
+                                Deletar participantes
+                              </Button>
+                            </div>
                           </PopoverClose>
                         </div>
                       </PopoverContent>
@@ -224,10 +233,22 @@ export default function AttendeeList() {
         </Table>
       </div>
       {isModalOpen && selectedAttendee && (
-        <ModalComponent
+        <EditAttendeeModal
           {...selectedAttendee}
-          onClose={() => setIsOpenModal(false)}
           onAttendeeUpdate={updateAttendee}
+          onOpen={isModalOpen}
+          onClose={() => setIsOpenModal(false)}
+        />
+      )}
+      {showDeleteDialog && deleteAttendeeTicketId && (
+        <DeleteAttendeeDialog
+          ticketId={deleteAttendeeTicketId}
+          onClose={closeDeleteDialog}
+          onDeleted={() => {
+            console.log("To be deleted", deleteAttendeeTicketId);
+            deleteAttendee(deleteAttendeeTicketId);
+            closeDeleteDialog();
+          }}
         />
       )}
     </>

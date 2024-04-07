@@ -4,6 +4,6 @@ export interface Attendee {
   name: string;
   email: string;
   createdAt: string;
-  isCheckedIn: boolean | null;
+  isCheckedIn: boolean;
   checkInDate: string | null;
 }

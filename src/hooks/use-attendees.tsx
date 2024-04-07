@@ -35,9 +35,20 @@ export const useAttendees = (page: number, searchValue: string) => {
   }, []);
 
   const addNewAttendee = useCallback((newAttendee: Attendee) => {
-    setAttendees((currentAttendees) => [...currentAttendees, newAttendee]);
+    setAttendees((currentAttendees) => [newAttendee, ...currentAttendees]);
     setTotal((currentTotal) => currentTotal + 1);
   }, []);
 
-  return { attendees, total, updateAttendee, addNewAttendee };
+  const deleteAttendee = useCallback((ticketId: string) => {
+    console.log("Before delete", attendees);
+    setAttendees((currentAttendees) =>
+      currentAttendees.filter((attendee) => attendee.ticketId !== ticketId)
+    );
+    useEffect(() => {
+      console.log("Attendees after update:", attendees);
+    }, [attendees]);
+    setTotal((currentTotal) => currentTotal - 1);
+  }, []);
+
+  return { attendees, total, updateAttendee, addNewAttendee, deleteAttendee };
 };
