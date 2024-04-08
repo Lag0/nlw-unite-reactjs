@@ -9,7 +9,9 @@ export default function Header() {
       </a>
       <nav className="flex items-center gap-5">
         <NavLink href="/eventos">Eventos</NavLink>
-        {/* <NavLink href="/">Participantes</NavLink> */}
+        <NavLink href="/eventos/warung-day-curitiba/participantes">
+          Participantes
+        </NavLink>
       </nav>
     </header>
   );
