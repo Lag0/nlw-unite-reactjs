@@ -10,9 +10,7 @@ export const getEventInfo = (eventId: string) => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(
-          `${BASE_URL}/events/396fffb3-c127-4f02-a3f2-e25decbdfd5e`
-        );
+        const response = await fetch(`${BASE_URL}/events/${eventId}`);
         console.log("👉 get-event response:", response);
         if (!response.ok) {
           throw new Error("Erro ao buscar detalhes do evento");
