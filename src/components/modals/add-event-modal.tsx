@@ -21,9 +21,11 @@ interface AddEventModalProps {
   onAddNewEvent?: (newEvent: Event) => void;
 }
 
+// TODO: Validação de formulário
+
 export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
   const [title, setTitle] = useState<string>("");
-  const [details, setDetails] = useState<string>("");
+  const [details, setDetails] = useState<string | null>(null);
   const [maximumAttendees, setMaximumAttendees] = useState<number | null>(null);
   const [price, setPrice] = useState<number | null>(null);
   const addEvent = useAddEvent();
@@ -67,7 +69,7 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
         <div className="grid items-start gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="title" className="text-right">
-              Título
+              Título <span className="text-red-500 mr-1">*</span>
             </Label>
             <Input
               id="title"
@@ -75,7 +77,7 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Título do seu evento muito legal!"
-              required
+              required={true}
               className="col-span-3"
             />
           </div>
@@ -85,10 +87,10 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
             </Label>
             <Input
               id="details"
-              value={details}
+              value={details === null ? "" : details}
               onChange={(e) => setDetails(e.target.value)}
               placeholder="Descrição do seu evento muito legal!"
-              required
+              required={true}
               className="col-span-3"
             />
           </div>
@@ -101,7 +103,6 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
               value={maximumAttendees === null ? "" : maximumAttendees}
               onChange={(e) => setMaximumAttendees(parseInt(e.target.value))}
               placeholder="Quantidade de participantes"
-              required
               className="col-span-3"
             />
           </div>
@@ -113,8 +114,7 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
               id="price"
               value={price === null ? "" : price}
               onChange={(e) => setPrice(parseFloat(e.target.value))}
-              placeholder="Preço do evento (0) para gratuito"
-              required
+              placeholder="Preço do evento em R$"
               className="col-span-3"
             />
           </div>

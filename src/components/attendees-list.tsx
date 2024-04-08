@@ -27,35 +27,25 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { useAttendees } from "../hooks/attendee/use-attendees";
 import { SearchBar } from "./search-bar";
 import { AddAttendeeModal } from "./modals/add-attendee-modal";
 import { Attendee } from "../types/Attendee";
 import { DeleteAttendeeDialog } from "./modals/delete-attendee-modal";
-import { getEventInfo } from "@/hooks/event/get-event";
 import { SkeletonTable } from "./skeletons/skeleton-table";
 import { SkeletonDescription } from "./skeletons/skeleton-description";
+import { useParams } from "react-router-dom";
+import { getEventInfo } from "@/hooks/event/get-event-by-slug";
+import { useAttendeesSlug } from "@/hooks/attendee/use-attendees-by-slug";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
 
-const CURRENT_EVENT_ID = import.meta.env.VITE_CURRENT_EVENT_ID;
-
 export default function AttendeeList() {
-  const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
-  const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
-    null
-  );
-  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
-  const [deleteAttendeeTicketId, setDeleteAttendeeTicketId] = useState<
-    string | null
-  >(null);
-
+  const { slug } = useParams<{ slug: string }>();
   const [searchValue, setSearchValue] = useState<string>(() => {
     const url = new URL(window.location.toString());
     return url.searchParams.get("search") || "";
   });
-
   const [page, setPage] = useState<number>(() => {
     const url = new URL(window.location.toString());
     return Number(url.searchParams.get("page") || 1);
@@ -64,14 +54,23 @@ export default function AttendeeList() {
   const {
     attendees,
     total,
-    updateAttendee,
+    loadingAttendees,
     addNewAttendee,
     deleteAttendee,
-    loadingAttendees,
-  } = useAttendees(page, searchValue, CURRENT_EVENT_ID);
-  const { eventData, loading } = getEventInfo(CURRENT_EVENT_ID);
+    updateAttendee,
+  } = useAttendeesSlug(page, searchValue, slug!);
+  const { eventData, loading: loadingEvent } = getEventInfo(slug!);
 
   const totalPages = total ? Math.ceil(total / 10) : 0;
+
+  const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
+  const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(
+    null
+  );
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [deleteAttendeeTicketId, setDeleteAttendeeTicketId] = useState<
+    string | null
+  >(null);
 
   const handleEditButtonClick = (attendee: Attendee) => {
     setSelectedAttendee(attendee);
@@ -114,8 +113,8 @@ export default function AttendeeList() {
     <>
       <div className={`flex flex-col gap-4 transition-all`}>
         <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
-        {loading && <SkeletonDescription />}
-        {!loading && (
+        {loadingEvent && <SkeletonDescription />}
+        {!loadingEvent && (
           <p className="text-muted-foreground">
             Lista de participantes para o evento{" "}
             <strong>

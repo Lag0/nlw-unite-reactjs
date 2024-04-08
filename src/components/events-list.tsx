@@ -32,6 +32,8 @@ import { SkeletonTable } from "./skeletons/skeleton-table";
 import { SkeletonDescription } from "./skeletons/skeleton-description";
 import { AddEventModal } from "./modals/add-event-modal";
 import { useToast } from "./ui/use-toast";
+import { Link } from "react-router-dom";
+import { DeleteAttendeeDialog } from "./modals/delete-attendee-modal";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
@@ -47,7 +49,9 @@ export default function EventList() {
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const { eventsList, loading, addNewEvent } = useEventsList();
+  const { eventsList, loading, addNewEvent, deleteEvent } = useEventsList();
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+  const [deletedEventId, setDeletedEventId] = useState<string | null>(null);
 
   const total = eventsList.length;
   const totalPages = Math.ceil(total / 10);
@@ -60,28 +64,17 @@ export default function EventList() {
       description: "Tente novamente mais tarde.",
       variant: "destructive",
     });
-
-    // attendee: Attendee
-    // setSelectedAttendee(attendee);
-    // setIsOpenModal(true);
   };
 
-  const openDeleteDialog = () => {
-    toast({
-      title: "❌ Funcionalidade não implementada",
-      description: "Tente novamente mais tarde.",
-      variant: "destructive",
-    });
-
-    // ticketId: string
-    // setDeleteAttendeeTicketId(ticketId);
-    // setShowDeleteDialog(true);
+  const openDeleteDialog = (eventId: string) => {
+    setDeletedEventId(eventId);
+    setShowDeleteDialog(true);
   };
 
-  // const closeDeleteDialog = () => {
-  //   setDeleteAttendeeTicketId(null);
-  //   setShowDeleteDialog(false);
-  // };
+  const closeDeleteDialog = () => {
+    setDeletedEventId(null);
+    setShowDeleteDialog(false);
+  };
 
   const setCurrentSearch = (search: string) => {
     const url = new URL(window.location.toString());
@@ -136,7 +129,6 @@ export default function EventList() {
                 <TableHead>ID do Evento</TableHead>
                 <TableHead>Título</TableHead>
                 <TableHead>Data de Criação</TableHead>
-                {/* <TableHead>Capacidade</TableHead> */}
                 <TableHead>Participantes</TableHead>
                 <TableHead />
               </TableRow>
@@ -151,16 +143,20 @@ export default function EventList() {
                     </TableCell>
                     <TableCell>{event.id}</TableCell>
                     <TableCell className="font-semibold">
-                      <a href="/eventos" className="flex flex-col">
+                      <Link
+                        to={`/eventos/${event.slug}/participantes`}
+                        className="flex flex-col"
+                      >
                         <span className="">{event.title}</span>
                         <span className="text-muted-foreground">
                           {event.slug}
                         </span>
-                      </a>
+                      </Link>
                     </TableCell>
                     <TableCell>{dayjs().to(event.createdAt)}</TableCell>
-                    {/* <TableCell>{event.maximumAttendees}</TableCell> */}
-                    <TableCell>{event.currentAttendees}</TableCell>
+                    <TableCell>
+                      {event.currentAttendees ? event.currentAttendees : 0}
+                    </TableCell>
                     <TableCell>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -187,7 +183,7 @@ export default function EventList() {
                                 <Button
                                   variant={"ghost"}
                                   className="pl-1 font-normal"
-                                  onClick={() => openDeleteDialog()}
+                                  onClick={() => openDeleteDialog(event.id)}
                                 >
                                   Deletar evento
                                 </Button>
@@ -251,18 +247,18 @@ export default function EventList() {
           onOpen={isModalOpen}
           onClose={() => setIsOpenModal(false)}
         />
-      )}
-      {showDeleteDialog && deleteAttendeeTicketId && (
+      )} */}
+      {showDeleteDialog && deletedEventId && (
         <DeleteAttendeeDialog
-          ticketId={deleteAttendeeTicketId}
+          isAttendee={false}
+          ticketId={deletedEventId}
           onClose={closeDeleteDialog}
           onDeleted={() => {
-            console.log("To be deleted", deleteAttendeeTicketId);
-            deleteAttendee(deleteAttendeeTicketId);
+            deleteEvent(deletedEventId);
             closeDeleteDialog();
           }}
         />
-      )} */}
+      )}
     </>
   );
 }

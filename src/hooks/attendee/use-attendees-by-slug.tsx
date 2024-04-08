@@ -3,10 +3,10 @@ import { Attendee } from "../../types/Attendee";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const useAttendees = (
+export const useAttendeesSlug = (
   page: number,
   searchValue: string,
-  eventId: string
+  slug?: string
 ) => {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [loadingAttendees, setLoadingAttendees] = useState<boolean>(true);
@@ -15,11 +15,12 @@ export const useAttendees = (
   useEffect(() => {
     const fetchAttendees = async () => {
       try {
-        const url = new URL(`${BASE_URL}/events/${eventId}/attendees`);
+        const url = new URL(`${BASE_URL}/events/slug/${slug}/attendees`);
         url.searchParams.set("pageIndex", String(page - 1));
         if (searchValue) url.searchParams.set("query", searchValue);
 
         const response = await fetch(url.toString());
+        console.log("👉 use-attendees-test response:", response);
         const data = await response.json();
         setAttendees(data.attendees);
         setTotal(data.total);
@@ -62,9 +63,9 @@ export const useAttendees = (
   return {
     attendees,
     total,
-    updateAttendee,
-    addNewAttendee,
-    deleteAttendee,
     loadingAttendees,
+    addNewAttendee,
+    updateAttendee,
+    deleteAttendee,
   };
 };

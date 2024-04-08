@@ -17,7 +17,6 @@ export const useEventsList = () => {
           throw new Error("Erro ao buscar lista de eventos");
         }
         const data = await response.json();
-        console.log(data);
         setEventsList(data);
         setTotal(data.length);
       } catch (error) {
@@ -35,5 +34,17 @@ export const useEventsList = () => {
     setTotal((currentTotal) => currentTotal + 1);
   }, []);
 
-  return { eventsList, loading, total, addNewEvent };
+  const deleteEvent = useCallback((eventId: string) => {
+    setEventsList((currentEvents) =>
+      currentEvents.filter((event) => event.id !== eventId)
+    );
+    useEffect(() => {}, [eventsList]);
+    setTotal((currentTotal) => currentTotal - 1);
+  }, []);
+
+  const getIdBySlug = useCallback((slug?: string) => {
+    return eventsList.find((event) => event.slug === slug)?.id;
+  }, []);
+
+  return { eventsList, loading, total, addNewEvent, deleteEvent, getIdBySlug };
 };

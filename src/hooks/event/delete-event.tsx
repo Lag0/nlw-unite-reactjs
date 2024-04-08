@@ -3,12 +3,12 @@ import { useToast } from "@/components/ui/use-toast";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function handleErrorResponse(response: Response, toast: any) {
-  let errorTitle = "❌ Erro ao deletar participante";
+  let errorTitle = "❌ Erro ao deletar evento";
   let errorDescription = "Ocorreu um erro. Tente novamente mais tarde.";
 
   switch (response.status) {
     case 404:
-      errorDescription = "Participante não encontrado.";
+      errorDescription = "Evento não encontrado.";
       break;
     case 500:
       errorDescription =
@@ -26,10 +26,10 @@ function handleErrorResponse(response: Response, toast: any) {
   });
 }
 
-export const useDeleteAttendee = () => {
+export const useDeleteEvent = () => {
   const { toast } = useToast();
-  const deleteAttendee = async (ticketId: string): Promise<void> => {
-    const response = await fetch(`${BASE_URL}/attendees/${ticketId}`, {
+  const deletedEvent = async (ticketId: string): Promise<void> => {
+    const response = await fetch(`${BASE_URL}/events/${ticketId}`, {
       method: "DELETE",
     });
 
@@ -38,8 +38,8 @@ export const useDeleteAttendee = () => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    console.log(`✅ Successfully deleted attendee:`);
-    toast({ title: "✅ Participante excluído com sucesso!" });
+    console.log(`✅ Successfully deleted event:`);
+    toast({ title: "✅ Evento excluído com sucesso!" });
   };
-  return deleteAttendee;
+  return deletedEvent;
 };

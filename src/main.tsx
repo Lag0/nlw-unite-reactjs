@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { App } from "./App.tsx";
+import { Attendees } from "./Attendees.tsx";
 import { Events } from "./Events.tsx";
 import { Toaster } from "./components/ui/toaster";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -11,12 +11,20 @@ import "./index.css";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Events />,
     errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/eventos",
+        element: <Events />,
+        errorElement: <ErrorPage />,
+      },
+    ],
   },
   {
-    path: "/eventos",
-    element: <Events />,
+    path: "/eventos/:slug/participantes",
+    element: <Attendees />,
+    errorElement: <ErrorPage />,
   },
 ]);
 
