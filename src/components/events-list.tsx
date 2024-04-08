@@ -147,7 +147,7 @@ export default function EventList() {
                         to={`/eventos/${event.slug}/participantes`}
                         className="flex flex-col"
                       >
-                        <span className="">{event.title}</span>
+                        <span className="underline">{event.title}</span>
                         <span className="text-muted-foreground">
                           {event.slug}
                         </span>

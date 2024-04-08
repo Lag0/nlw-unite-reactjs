@@ -40,6 +40,8 @@ import { useAttendeesSlug } from "@/hooks/attendee/use-attendees-by-slug";
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
 
+// TODO: Tratar erro ao acessar página com slug invalido
+
 export default function AttendeeList() {
   const { slug } = useParams<{ slug: string }>();
   const [searchValue, setSearchValue] = useState<string>(() => {
