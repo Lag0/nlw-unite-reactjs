@@ -14,8 +14,8 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 import { useState } from "react";
-import { Event } from "@/types/Event";
-import { useAddEvent } from "@/hooks/event/add-events";
+import { Event } from "../../types/Event";
+import { useAddEvent } from "../../hooks/event/add-events";
 
 interface AddEventModalProps {
   onAddNewEvent?: (newEvent: Event) => void;

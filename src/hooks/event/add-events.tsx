@@ -1,4 +1,4 @@
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "../../components/ui/use-toast";
 import { Event } from "../../types/Event";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
