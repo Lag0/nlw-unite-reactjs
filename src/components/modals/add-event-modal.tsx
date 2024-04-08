@@ -15,6 +15,7 @@ import { Label } from "../ui/label";
 
 import { useState } from "react";
 import { Event } from "@/types/Event";
+import { useAddEvent } from "@/hooks/event/add-events";
 
 interface AddEventModalProps {
   onAddNewEvent?: (newEvent: Event) => void;
@@ -23,16 +24,22 @@ interface AddEventModalProps {
 export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
   const [title, setTitle] = useState<string>("");
   const [details, setDetails] = useState<string>("");
-  const [maximumAttendees, setMaximumAttendees] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  // const addEvent = useAddEvent();
+  const [maximumAttendees, setMaximumAttendees] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
+  const addEvent = useAddEvent();
 
   const handleSubmitButton = async () => {
     try {
-      const newEvent = await addEvent(title, details, maximumAttendees, price);
+      const newEvent = await addEvent({
+        title,
+        details,
+        maximumAttendees,
+        price,
+      });
+      console.log(newEvent);
       if (onAddNewEvent) onAddNewEvent(newEvent);
     } catch (error) {
-      console.error("Failed to add new attendee:", error);
+      console.error("❌ Failed to create new event:", error);
     }
   };
 
@@ -87,12 +94,12 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="maximumAttendees" className="text-right">
-              Descrição
+              Máximo de participantes
             </Label>
             <Input
               id="maximumAttendees"
               value={maximumAttendees}
-              onChange={(e) => setMaximumAttendees(e.target.value)}
+              onChange={(e) => setMaximumAttendees(parseInt(e.target.value))}
               placeholder="Quantidade de participantes"
               required
               className="col-span-3"
@@ -100,12 +107,12 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="price" className="text-right">
-              Descrição
+              Preço
             </Label>
             <Input
               id="price"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => setPrice(parseFloat(e.target.value))}
               placeholder="Preço do evento (0) para gratuito"
               required
               className="col-span-3"

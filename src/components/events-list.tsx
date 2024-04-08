@@ -21,26 +21,19 @@ import {
   TableRow,
 } from "./ui/table";
 import { useState } from "react";
-// import { EditAttendeeModal } from "./edit-attendee-modal";
 import { Checkbox } from "./ui/checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
-import { useAttendees } from "../hooks/attendee/use-attendees";
 import { SearchBar } from "./search-bar";
-// import { AddAttendeeModal } from "./add-attendee-modal";
-// import { Attendee } from "../types/Attendee";
-// import { DeleteAttendeeDialog } from "./delete-attendee-dialog";
-import { useEventsList } from "@/hooks/event/use-events";
+import { useEventsList } from "@/hooks/event/list-events";
 import { SkeletonTable } from "./skeletons/skeleton-table";
 import { SkeletonDescription } from "./skeletons/skeleton-description";
 import { AddEventModal } from "./modals/add-event-modal";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
-
-const EVENT_ID = "4d581edb-3f8c-4224-9182-c4398cfea080";
 
 export default function EventList() {
   const [searchValue, setSearchValue] = useState<string>(() => {
@@ -53,8 +46,9 @@ export default function EventList() {
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const { attendees, total } = useAttendees(page, searchValue, EVENT_ID);
-  const { eventsList, loading } = useEventsList();
+  const { eventsList, loading, addNewEvent } = useEventsList();
+
+  const total = eventsList.length;
 
   const totalPages = Math.ceil(total / 10);
 
@@ -85,7 +79,6 @@ export default function EventList() {
     const url = new URL(window.location.toString());
     url.searchParams.set("page", String(page));
     window.history.pushState({}, "", url.toString());
-
     setPage(page);
   };
 
@@ -112,7 +105,7 @@ export default function EventList() {
             onChange={setCurrentSearch}
             placeholder="Buscar eventos..."
           />
-          <AddEventModal />
+          <AddEventModal onAddNewEvent={addNewEvent} />
         </div>
 
         {loading && <SkeletonTable />}
@@ -197,7 +190,7 @@ export default function EventList() {
             <TableFooter className="bg-transparent">
               <TableRow>
                 <TableCell colSpan={3}>
-                  Mostrando {attendees.length} de {total} items
+                  Mostrando {eventsList.length} de {total} items
                 </TableCell>
                 <TableCell colSpan={3} className="text-right">
                   <div className="inline-flex items-center gap-8">

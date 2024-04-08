@@ -1,11 +1,12 @@
 import { Event } from "@/types/Event";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const useEventInfo = (eventId: string) => {
   const [eventData, setEventData] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(true);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -26,31 +27,10 @@ export const useEventInfo = (eventId: string) => {
     fetchEventDetails();
   }, [eventId]);
 
-  return { eventData, loading };
-};
-
-export const useEventsList = () => {
-  const [eventsList, setEventsList] = useState<Event[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchEventsList = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/events`);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar lista de eventos");
-        }
-        const data = await response.json();
-        setEventsList(data);
-      } catch (error) {
-        console.error("Falha ao buscar lista de eventos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEventsList();
+  const addNewEvent = useCallback((newEvent: Event) => {
+    setEventData((currentEvent) => [newEvent, ...currentEvent]);
+    setTotal((currentTotal) => currentTotal + 1);
   }, []);
 
-  return { eventsList, loading };
+  return { eventData, loading, addNewEvent };
 };
