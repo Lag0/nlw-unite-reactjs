@@ -31,6 +31,7 @@ import { useEventsList } from "@/hooks/event/list-events";
 import { SkeletonTable } from "./skeletons/skeleton-table";
 import { SkeletonDescription } from "./skeletons/skeleton-description";
 import { AddEventModal } from "./modals/add-event-modal";
+import { useToast } from "./ui/use-toast";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
@@ -49,18 +50,33 @@ export default function EventList() {
   const { eventsList, loading, addNewEvent } = useEventsList();
 
   const total = eventsList.length;
-
   const totalPages = Math.ceil(total / 10);
 
-  // const handleEditButtonClick = (attendee: Attendee) => {
-  //   setSelectedAttendee(attendee);
-  //   setIsOpenModal(true);
-  // };
+  const { toast } = useToast();
 
-  // const openDeleteDialog = (ticketId: string) => {
-  //   setDeleteAttendeeTicketId(ticketId);
-  //   setShowDeleteDialog(true);
-  // };
+  const handleEditButtonClick = () => {
+    toast({
+      title: "❌ Funcionalidade não implementada",
+      description: "Tente novamente mais tarde.",
+      variant: "destructive",
+    });
+
+    // attendee: Attendee
+    // setSelectedAttendee(attendee);
+    // setIsOpenModal(true);
+  };
+
+  const openDeleteDialog = () => {
+    toast({
+      title: "❌ Funcionalidade não implementada",
+      description: "Tente novamente mais tarde.",
+      variant: "destructive",
+    });
+
+    // ticketId: string
+    // setDeleteAttendeeTicketId(ticketId);
+    // setShowDeleteDialog(true);
+  };
 
   // const closeDeleteDialog = () => {
   //   setDeleteAttendeeTicketId(null);
@@ -120,7 +136,7 @@ export default function EventList() {
                 <TableHead>ID do Evento</TableHead>
                 <TableHead>Título</TableHead>
                 <TableHead>Data de Criação</TableHead>
-                <TableHead>Capacidade</TableHead>
+                {/* <TableHead>Capacidade</TableHead> */}
                 <TableHead>Participantes</TableHead>
                 <TableHead />
               </TableRow>
@@ -143,7 +159,7 @@ export default function EventList() {
                       </a>
                     </TableCell>
                     <TableCell>{dayjs().to(event.createdAt)}</TableCell>
-                    <TableCell>{event.maximumAttendees}</TableCell>
+                    {/* <TableCell>{event.maximumAttendees}</TableCell> */}
                     <TableCell>{event.currentAttendees}</TableCell>
                     <TableCell>
                       <Popover>
@@ -164,18 +180,14 @@ export default function EventList() {
                                 <Button
                                   variant={"ghost"}
                                   className="pl-1 font-normal"
-                                  // onClick={() =>
-                                  //   handleEditButtonClick(attendee)
-                                  // }
+                                  onClick={() => handleEditButtonClick()}
                                 >
                                   Editar evento
                                 </Button>
                                 <Button
                                   variant={"ghost"}
                                   className="pl-1 font-normal"
-                                  // onClick={() =>
-                                  //   openDeleteDialog(attendee.ticketId)
-                                  // }
+                                  onClick={() => openDeleteDialog()}
                                 >
                                   Deletar evento
                                 </Button>

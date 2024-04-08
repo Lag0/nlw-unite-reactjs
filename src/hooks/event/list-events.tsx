@@ -12,7 +12,7 @@ export const useEventsList = () => {
     const fetchEventsList = async () => {
       try {
         const response = await fetch(`${BASE_URL}/events`);
-        console.log(response);
+        console.log("👉 list-events response:", response);
         if (!response.ok) {
           throw new Error("Erro ao buscar lista de eventos");
         }

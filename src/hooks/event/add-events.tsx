@@ -56,6 +56,8 @@ export const useAddEvent = () => {
       }),
     });
 
+    console.log("👉 add-event response:", response);
+
     if (!response.ok) {
       handleErrorResponse(response, toast);
       throw new Error(`HTTP error! status: ${response.status}`);
