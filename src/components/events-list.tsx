@@ -132,7 +132,7 @@ export default function EventList() {
                 <TableHead>ID do Evento</TableHead>
                 <TableHead>Título</TableHead>
                 <TableHead>Data de Criação</TableHead>
-                <TableHead>Participantes</TableHead>
+                <TableHead>Participantes / Total</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -158,7 +158,8 @@ export default function EventList() {
                     </TableCell>
                     <TableCell>{dayjs().to(event.createdAt)}</TableCell>
                     <TableCell>
-                      {event.currentAttendees ? event.currentAttendees : 0}
+                      {event.currentAttendees ? event.currentAttendees : 0} /{" "}
+                      {event.maximumAttendees ? event.maximumAttendees : 0}
                     </TableCell>
                     <TableCell>
                       <Popover>
