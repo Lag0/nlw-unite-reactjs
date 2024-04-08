@@ -11,14 +11,13 @@ export const getEventInfo = (slug: string) => {
     const fetchEventDetails = async () => {
       try {
         const response = await fetch(`${BASE_URL}/events/slug/${slug}`);
-        console.log("👉 get-event response:", response);
         if (!response.ok) {
-          throw new Error("Erro ao buscar detalhes do evento");
+          throw new Error("❌ Erro ao buscar detalhes do evento");
         }
         const data = await response.json();
         setEventData(data.event);
       } catch (error) {
-        console.error("Falha ao buscar evento:", error);
+        console.error("❌ Falha ao buscar detalhes do evento:", error);
       } finally {
         setLoading(false);
       }

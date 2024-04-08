@@ -43,13 +43,16 @@ export default function EventList() {
     const url = new URL(window.location.toString());
     return url.searchParams.get("search") || "";
   });
-
   const [page, setPage] = useState<number>(() => {
     const url = new URL(window.location.toString());
     return Number(url.searchParams.get("page") || 1);
   });
 
-  const { eventsList, loading, addNewEvent, deleteEvent } = useEventsList();
+  const { eventsList, loading, addNewEvent, deleteEvent } = useEventsList(
+    page,
+    searchValue
+  );
+
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [deletedEventId, setDeletedEventId] = useState<string | null>(null);
 

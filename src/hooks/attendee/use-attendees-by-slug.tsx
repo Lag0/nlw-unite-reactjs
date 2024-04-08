@@ -6,7 +6,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const useAttendeesSlug = (
   page: number,
   searchValue: string,
-  slug?: string
+  slug: string
 ) => {
   const [attendees, setAttendees] = useState<Attendee[]>([]);
   const [loadingAttendees, setLoadingAttendees] = useState<boolean>(true);
@@ -20,7 +20,8 @@ export const useAttendeesSlug = (
         if (searchValue) url.searchParams.set("query", searchValue);
 
         const response = await fetch(url.toString());
-        console.log("👉 use-attendees-test response:", response);
+        if (!response.ok) throw new Error("❌ Falha ao buscar participantes");
+
         const data = await response.json();
         setAttendees(data.attendees);
         setTotal(data.total);
