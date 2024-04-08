@@ -6,4 +6,5 @@ export interface Event {
   maximumAttendees: number;
   currentAttendees: number;
   price: number;
+  createdAt: string;
 }

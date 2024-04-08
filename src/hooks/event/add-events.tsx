@@ -29,9 +29,9 @@ function handleErrorResponse(response: Response, toast: any) {
 
 interface addEventProps {
   title: string;
-  details?: string;
-  maximumAttendees?: number;
-  price?: number;
+  details?: string | null;
+  maximumAttendees?: number | null;
+  price?: number | null;
 }
 
 export const useAddEvent = () => {
@@ -52,6 +52,7 @@ export const useAddEvent = () => {
         details,
         maximumAttendees,
         price,
+        createdAt: new Date(),
       }),
     });
 

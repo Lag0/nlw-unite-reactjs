@@ -24,8 +24,8 @@ interface AddEventModalProps {
 export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
   const [title, setTitle] = useState<string>("");
   const [details, setDetails] = useState<string>("");
-  const [maximumAttendees, setMaximumAttendees] = useState<number>(0);
-  const [price, setPrice] = useState<number>(0);
+  const [maximumAttendees, setMaximumAttendees] = useState<number | null>(null);
+  const [price, setPrice] = useState<number | null>(null);
   const addEvent = useAddEvent();
 
   const handleSubmitButton = async () => {
@@ -98,7 +98,7 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
             </Label>
             <Input
               id="maximumAttendees"
-              value={maximumAttendees}
+              value={maximumAttendees === null ? "" : maximumAttendees}
               onChange={(e) => setMaximumAttendees(parseInt(e.target.value))}
               placeholder="Quantidade de participantes"
               required
@@ -111,7 +111,7 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
             </Label>
             <Input
               id="price"
-              value={price}
+              value={price === null ? "" : price}
               onChange={(e) => setPrice(parseFloat(e.target.value))}
               placeholder="Preço do evento (0) para gratuito"
               required

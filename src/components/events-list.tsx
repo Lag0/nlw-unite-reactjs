@@ -119,7 +119,7 @@ export default function EventList() {
                 </TableHead>
                 <TableHead>ID do Evento</TableHead>
                 <TableHead>Título</TableHead>
-                <TableHead>Slug</TableHead>
+                <TableHead>Data de Criação</TableHead>
                 <TableHead>Capacidade</TableHead>
                 <TableHead>Participantes</TableHead>
                 <TableHead />
@@ -135,11 +135,14 @@ export default function EventList() {
                     </TableCell>
                     <TableCell>{event.id}</TableCell>
                     <TableCell className="font-semibold">
-                      <a href="/eventos" className="underline">
-                        {event.title}
+                      <a href="/eventos" className="flex flex-col">
+                        <span className="">{event.title}</span>
+                        <span className="text-muted-foreground">
+                          {event.slug}
+                        </span>
                       </a>
                     </TableCell>
-                    <TableCell>{event.slug}</TableCell>
+                    <TableCell>{dayjs().to(event.createdAt)}</TableCell>
                     <TableCell>{event.maximumAttendees}</TableCell>
                     <TableCell>{event.currentAttendees}</TableCell>
                     <TableCell>

@@ -1,17 +1,19 @@
-import { Event } from "@/types/Event";
-import { useState, useEffect, useCallback } from "react";
+import { Event } from "../../types/Event";
+import { useState, useEffect } from "react";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const useEventInfo = (eventId: string) => {
+export const getEventInfo = (eventId: string) => {
   const [eventData, setEventData] = useState<Event>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/events/${eventId}`);
+        const response = await fetch(
+          `${BASE_URL}/events/396fffb3-c127-4f02-a3f2-e25decbdfd5e`
+        );
+        console.log("👉 get-event response:", response);
         if (!response.ok) {
           throw new Error("Erro ao buscar detalhes do evento");
         }
@@ -27,10 +29,5 @@ export const useEventInfo = (eventId: string) => {
     fetchEventDetails();
   }, [eventId]);
 
-  const addNewEvent = useCallback((newEvent: Event) => {
-    setEventData((currentEvent) => [newEvent, ...currentEvent]);
-    setTotal((currentTotal) => currentTotal + 1);
-  }, []);
-
-  return { eventData, loading, addNewEvent };
+  return { eventData, loading };
 };

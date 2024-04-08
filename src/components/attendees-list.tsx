@@ -32,14 +32,14 @@ import { SearchBar } from "./search-bar";
 import { AddAttendeeModal } from "./modals/add-attendee-modal";
 import { Attendee } from "../types/Attendee";
 import { DeleteAttendeeDialog } from "./modals/delete-attendee-modal";
-import { useEventInfo } from "@/hooks/event/use-events";
+import { getEventInfo } from "@/hooks/event/get-event";
 import { SkeletonTable } from "./skeletons/skeleton-table";
 import { SkeletonDescription } from "./skeletons/skeleton-description";
 
 dayjs.extend(relativeTime);
 dayjs.locale("pt-br");
 
-const EVENT_ID = "4d581edb-3f8c-4224-9182-c4398cfea080";
+const CURRENT_EVENT_ID = import.meta.env.VITE_CURRENT_EVENT_ID;
 
 export default function AttendeeList() {
   const [isModalOpen, setIsOpenModal] = useState<boolean>(false);
@@ -68,10 +68,10 @@ export default function AttendeeList() {
     addNewAttendee,
     deleteAttendee,
     loadingAttendees,
-  } = useAttendees(page, searchValue, EVENT_ID);
-  const { eventData, loading } = useEventInfo(EVENT_ID);
+  } = useAttendees(page, searchValue, CURRENT_EVENT_ID);
+  const { eventData, loading } = getEventInfo(CURRENT_EVENT_ID);
 
-  const totalPages = Math.ceil(total / 10);
+  const totalPages = total ? Math.ceil(total / 10) : 0;
 
   const handleEditButtonClick = (attendee: Attendee) => {
     setSelectedAttendee(attendee);
@@ -118,7 +118,11 @@ export default function AttendeeList() {
         {!loading && (
           <p className="text-muted-foreground">
             Lista de participantes para o evento{" "}
-            <strong>{eventData?.title}</strong>
+            <strong>
+              {eventData?.title
+                ? eventData?.title
+                : "nenhum evento selecionado"}
+            </strong>
           </p>
         )}
 
@@ -136,7 +140,6 @@ export default function AttendeeList() {
                 <TableHead role="checkbox" className="col-span-1">
                   <Checkbox className="rounded border-white/10" />
                 </TableHead>
-                {/* <TableHead>Código</TableHead> */}
                 <TableHead>Ingresso</TableHead>
                 <TableHead>Participante</TableHead>
                 <TableHead>Data de Inscrição</TableHead>
@@ -146,85 +149,93 @@ export default function AttendeeList() {
             </TableHeader>
 
             <TableBody>
-              {attendees.map((attendee) => {
-                return (
-                  <TableRow key={attendee.ticketId}>
-                    <TableCell role="checkbox">
-                      <Checkbox className="rounded border-white/10" />
-                    </TableCell>
-                    {/* <TableCell>{attendee.id}</TableCell> */}
-                    <TableCell>{attendee.ticketId}</TableCell>
-                    <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <span className="font-semibold text-white">
-                          {attendee.name}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {attendee.email}
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
-                    <TableCell>
-                      {attendee.isCheckedIn === false ? (
-                        <span className="text-muted-foreground">
-                          ❌ Não fez Check-In
-                        </span>
-                      ) : (
-                        <span className="text-foreground">
-                          ✅ Check-In feito {dayjs().to(attendee.checkInDate)}
-                        </span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <div>
-                            <IconButton transparent>
-                              <MoreHorizontal className="size-4" />
-                            </IconButton>
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-fit mr-6">
-                          <div>
-                            <h4 className="pl-1">Ações</h4>
-                            <Separator className="my-3" />
+              {total === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center">
+                    Nenhum participante encontrado
+                  </TableCell>
+                </TableRow>
+              ) : (
+                attendees?.map((attendee) => {
+                  return (
+                    <TableRow key={attendee.ticketId}>
+                      <TableCell role="checkbox">
+                        <Checkbox className="rounded border-white/10" />
+                      </TableCell>
+                      <TableCell>{attendee.ticketId}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-1">
+                          <span className="font-semibold text-white">
+                            {attendee.name}
+                          </span>
+                          <span className="text-muted-foreground">
+                            {attendee.email}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
+                      <TableCell>
+                        {attendee.isCheckedIn === false ? (
+                          <span className="text-muted-foreground">
+                            ❌ Não fez Check-In
+                          </span>
+                        ) : (
+                          <span className="text-foreground">
+                            ✅ Check-In feito {dayjs().to(attendee.checkInDate)}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <div>
+                              <IconButton transparent>
+                                <MoreHorizontal className="size-4" />
+                              </IconButton>
+                            </div>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-fit mr-6">
+                            <div>
+                              <h4 className="pl-1">Ações</h4>
+                              <Separator className="my-3" />
 
-                            <PopoverClose asChild>
-                              <div className="flex flex-col items-start ">
-                                <Button
-                                  variant={"ghost"}
-                                  className="pl-1 font-normal"
-                                  onClick={() =>
-                                    handleEditButtonClick(attendee)
-                                  }
-                                >
-                                  Editar participantes
-                                </Button>
-                                <Button
-                                  variant={"ghost"}
-                                  className="pl-1 font-normal"
-                                  onClick={() =>
-                                    openDeleteDialog(attendee.ticketId)
-                                  }
-                                >
-                                  Deletar participantes
-                                </Button>
-                              </div>
-                            </PopoverClose>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                              <PopoverClose asChild>
+                                <div className="flex flex-col items-start ">
+                                  <Button
+                                    variant={"ghost"}
+                                    className="pl-1 font-normal"
+                                    onClick={() =>
+                                      handleEditButtonClick(attendee)
+                                    }
+                                  >
+                                    Editar participantes
+                                  </Button>
+                                  <Button
+                                    variant={"ghost"}
+                                    className="pl-1 font-normal"
+                                    onClick={() =>
+                                      openDeleteDialog(attendee.ticketId)
+                                    }
+                                  >
+                                    Deletar participantes
+                                  </Button>
+                                </div>
+                              </PopoverClose>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
 
             <TableFooter className="bg-transparent">
               <TableRow>
                 <TableCell colSpan={3}>
-                  Mostrando {attendees.length} de {total} items
+                  Mostrando {attendees?.length ? attendees.length : 0} de{" "}
+                  {total ? total : 0} items
                 </TableCell>
                 <TableCell colSpan={3} className="text-right">
                   <div className="inline-flex items-center gap-8">
