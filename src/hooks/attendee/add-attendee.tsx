@@ -2,24 +2,21 @@ import { useToast } from "@/components/ui/use-toast";
 import { Attendee } from "../../types/Attendee";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-const CURRENT_EVENT_ID = import.meta.env.VITE_CURRENT_EVENT_ID;
 
 export const useAddAttendee = () => {
   const { toast } = useToast();
   const addAttendee = async (
     name: string,
-    email: string
+    email: string,
+    eventId: string
   ): Promise<Attendee> => {
-    const response = await fetch(
-      `${BASE_URL}/events/${CURRENT_EVENT_ID}/attendees`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email }),
-      }
-    );
+    const response = await fetch(`${BASE_URL}/events/${eventId}/attendees`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email }),
+    });
 
     if (!response.ok) {
       if (response.status === 400) {

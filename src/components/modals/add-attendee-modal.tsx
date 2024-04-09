@@ -15,6 +15,8 @@ import { Label } from "../ui/label";
 import { useAddAttendee } from "../../hooks/attendee/add-attendee";
 import { useState } from "react";
 import { Attendee } from "@/types/Attendee";
+import { useParams } from "react-router-dom";
+import { getEventInfo } from "@/hooks/event/get-event-by-slug";
 
 interface AddAttendeeModalProps {
   onAddNewAttendee: (newAttendee: Attendee) => void;
@@ -24,10 +26,12 @@ export function AddAttendeeModal({ onAddNewAttendee }: AddAttendeeModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const addAttendee = useAddAttendee();
+  const { slug } = useParams();
+  const { eventData } = getEventInfo(slug!);
 
   const handleSubmitButton = async () => {
     try {
-      const newAttendee = await addAttendee(name, email);
+      const newAttendee = await addAttendee(name, email, eventData!.id);
       onAddNewAttendee(newAttendee);
     } catch (error) {
       console.error("Failed to add new attendee:", error);
