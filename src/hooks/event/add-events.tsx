@@ -9,6 +9,12 @@ function handleErrorResponse(response: Response, toast: any) {
 
   switch (response.status) {
     case 400:
+      errorDescription = "Preencha todos os campos obrigatórios.";
+      break;
+    case 403:
+      errorDescription = "Você não tem permissão para criar eventos.";
+      break;
+    case 409:
       errorDescription = "Um evento com este nome já existe.";
       break;
     case 500:
