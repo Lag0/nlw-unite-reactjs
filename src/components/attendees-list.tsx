@@ -144,7 +144,7 @@ export default function AttendeeList() {
                 <TableHead>Ingresso</TableHead>
                 <TableHead>Participante</TableHead>
                 <TableHead>Data de Inscrição</TableHead>
-                <TableHead>Status do Check-In</TableHead>
+                <TableHead className="truncate">Check-In</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
@@ -175,20 +175,19 @@ export default function AttendeeList() {
                         </div>
                       </TableCell>
                       <TableCell>{dayjs().to(attendee.createdAt)}</TableCell>
-                      <TableCell>
+                      <TableCell className="text-center sm:text-start">
                         {attendee.isCheckedIn === false ? (
                           <span className="text-muted-foreground">
-                            <span className="block sm:hidden">❌</span>
-                            <span className="hidden sm:block">
-                              ❌ Não fez Check-In
+                            ❌
+                            <span className="hidden sm:inline-block">
+                              Não fez Check-In
                             </span>
                           </span>
                         ) : (
                           <span className="text-foreground">
-                            <span className="block sm:hidden">✅</span>
-                            <span className="hidden sm:block">
-                              ✅ Check-In feito{" "}
-                              {dayjs().to(attendee.checkInDate)}
+                            ✅
+                            <span className="hidden sm:inline-block">
+                              Check-In feito {dayjs().to(attendee.checkInDate)}
                             </span>
                           </span>
                         )}
@@ -245,11 +244,11 @@ export default function AttendeeList() {
                   Mostrando {attendees?.length ? attendees.length : 0} de{" "}
                   {total ? total : 0} items
                 </TableCell>
-                <TableCell colSpan={3} className="text-right">
+                <TableCell colSpan={3} className="text-right py-4 px-0 sm:p-4">
                   <div className="inline-flex items-center gap-8">
                     <span>
-                      Página {page} de{" "}
-                      {totalPages ? totalPages : totalPages + 1}
+                      <span className="hidden sm:inline-block">Página</span>{" "}
+                      {page} de {totalPages ? totalPages : totalPages + 1}
                       ...
                     </span>
                     <div className="flex gap-1.5">
