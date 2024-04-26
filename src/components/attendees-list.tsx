@@ -178,11 +178,18 @@ export default function AttendeeList() {
                       <TableCell>
                         {attendee.isCheckedIn === false ? (
                           <span className="text-muted-foreground">
-                            ❌ Não fez Check-In
+                            <span className="block sm:hidden">❌</span>
+                            <span className="hidden sm:block">
+                              ❌ Não fez Check-In
+                            </span>
                           </span>
                         ) : (
                           <span className="text-foreground">
-                            ✅ Check-In feito {dayjs().to(attendee.checkInDate)}
+                            <span className="block sm:hidden">✅</span>
+                            <span className="hidden sm:block">
+                              ✅ Check-In feito{" "}
+                              {dayjs().to(attendee.checkInDate)}
+                            </span>
                           </span>
                         )}
                       </TableCell>
