@@ -56,7 +56,7 @@ export function AddEventModal({ onAddNewEvent }: AddEventModalProps) {
           <span>
             <PlusCircle className="size-4" />
           </span>
-          Adicionar evento
+          <span className="hidden sm:block">Adicionar evento</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-80 sm:max-w-[425px]">

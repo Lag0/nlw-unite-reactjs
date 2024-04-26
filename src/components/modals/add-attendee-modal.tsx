@@ -42,14 +42,14 @@ export function AddAttendeeModal({ onAddNewAttendee }: AddAttendeeModalProps) {
     <Dialog>
       <DialogTrigger asChild>
         <Button
-          className="gap-2 font-light border-dashed border"
+          className="gap-2 font-light border-dashed border "
           size={"sm"}
           variant={"ghost"}
         >
           <span>
             <PlusCircle className="size-4" />
           </span>
-          Adicionar participantes
+          <span className="hidden sm:block">Adicionar participantes</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-80 sm:max-w-[425px]">

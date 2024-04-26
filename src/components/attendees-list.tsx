@@ -113,7 +113,7 @@ export default function AttendeeList() {
 
   return (
     <>
-      <div className={`flex flex-col gap-4 transition-all`}>
+      <div className={`flex flex-col gap-4 transition-all px-4`}>
         <h1 className="text-2xl font-bold tracking-tight">Participantes</h1>
         {loadingEvent && <SkeletonDescription />}
         {!loadingEvent && (
